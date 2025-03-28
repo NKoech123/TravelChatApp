@@ -38,7 +38,7 @@ export const ChatScreen = ({ id }: ChatScreenProps) => {
     const { messagesById, messagesLoading, messagesError } = useSelector(
         state => state.messages
     )
-
+    const { chatsById } = useSelector(state => state.chats)
     const [isAIThinking, setIsAIThinking] = useState(false)
 
     const messages = useMemo(() => {
@@ -107,6 +107,23 @@ export const ChatScreen = ({ id }: ChatScreenProps) => {
                     )
                 )}
                 {isAIThinking && <ThinkingIndicator />}
+                {messagesError && <Text>Error loading messages</Text>}
+                {messages.length === 0 && (
+                    <View style={styles.messageContainer}>
+                        <View style={styles.message}>
+                            <TruncatedText
+                                text={`Hi there! I'm your AI assistant and I will assist you through your chat: ${chatsById[id].title}. What's on your mind?`}
+                                maxLines={8}
+                                style={{
+                                    color: 'white',
+                                    fontSize: 16,
+                                    fontFamily: 'JetBrainsMono',
+                                    lineHeight: 24,
+                                }}
+                            />
+                        </View>
+                    </View>
+                )}
             </ScrollView>
 
             <MessageTextInput
@@ -241,5 +258,16 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontFamily: 'JetBrainsMono',
         lineHeight: 24,
+    },
+    emptyContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    emptyText: {
+        fontSize: 16,
+        fontFamily: 'JetBrainsMono',
+        lineHeight: 24,
+        color: '#000000',
     },
 })
