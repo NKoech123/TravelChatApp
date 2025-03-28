@@ -48,22 +48,20 @@ export const MessageTextInput: FC<MessageTextInputProps> = ({
             handleSuccess: (messages: MessageSchema[]) => {
                 scrollToBottom()
 
-                // LLM call to get response
+                // LLM call
                 setIsAIThinking(true)
-                // Add delay before sending AI message
-                setTimeout(() => {
-                    actions.upsertMessage({
-                        chatId: chatId,
-                        message: {
-                            isAI: true,
-                            content: messages[0].content,
-                        },
-                        handleSuccess: (messages: MessageSchema[]) => {
-                            setIsAIThinking(false)
-                            scrollToBottom()
-                        },
-                    })
-                }, 5000)
+
+                actions.upsertMessage({
+                    chatId: chatId,
+                    message: {
+                        isAI: true,
+                        content: messages[0].content,
+                    },
+                    handleSuccess: (messages: MessageSchema[]) => {
+                        setIsAIThinking(false)
+                        scrollToBottom()
+                    },
+                })
             },
         })
     }

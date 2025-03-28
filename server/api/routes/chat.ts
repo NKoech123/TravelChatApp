@@ -1,7 +1,17 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify'
 import { chatService } from '../../services/lib/chat-service'
-import { ChatInputSchema, ChatSchema, ChatsSchema, MessagesSchema } from '@nicholas/types'
-import { chatInputSchema, chatSchema, chatsSchema, messagesSchema } from '@nicholas/schema'
+import {
+    ChatInputSchema,
+    ChatSchema,
+    ChatsSchema,
+    MessagesSchema,
+} from '@nicholas/types'
+import {
+    chatInputSchema,
+    chatSchema,
+    chatsSchema,
+    messagesSchema,
+} from '@nicholas/schema'
 
 export default async function chatRoutes(fastify: FastifyInstance) {
     fastify.get('/api/chats', {
@@ -68,7 +78,6 @@ async function upsertChats(
     }>,
     reply: FastifyReply
 ) {
-
     const { chats } = request.body
 
     const response = await chatService.upsertChats(chats as ChatSchema[])

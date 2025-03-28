@@ -103,7 +103,6 @@ class ChatService {
         }
     }
 
-
     async upsertChats(chats: ChatSchema[]): Promise<ChatsSchema> {
         const results: ChatsSchema = { chats: [] }
 

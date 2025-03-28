@@ -1,1 +1,1 @@
-export { TruncatedText } from './TruncatedText'; 
+export { TruncatedText } from './TruncatedText'

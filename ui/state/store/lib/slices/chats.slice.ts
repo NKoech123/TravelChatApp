@@ -63,7 +63,6 @@ export const upsertChat = createAsyncThunk(
     }
 )
 
-
 export const chatsSlice = createSlice({
     name: 'chats',
     initialState: initialChatsState,
@@ -116,7 +115,6 @@ export const chatsSlice = createSlice({
                 ${errorMessage}
                 Request Id: ${action.meta.requestId}`
         })
-
     },
 })
 

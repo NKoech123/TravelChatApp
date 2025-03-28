@@ -71,8 +71,8 @@ export const NewChatForm: FC<NewChatFormProps> = ({ closeModal }) => {
                         style={[
                             styles.inputField,
                             !isFormValid &&
-                            formData.title.length > 0 &&
-                            styles.inputError,
+                                formData.title.length > 0 &&
+                                styles.inputError,
                         ]}
                         placeholderTextColor="#666"
                         value={formData.title}
@@ -90,7 +90,10 @@ export const NewChatForm: FC<NewChatFormProps> = ({ closeModal }) => {
                         placeholderTextColor="#666"
                         value={formData.description}
                         onChangeText={text =>
-                            setFormData(prev => ({ ...prev, description: text }))
+                            setFormData(prev => ({
+                                ...prev,
+                                description: text,
+                            }))
                         }
                         editable={!chatsLoading}
                     />
@@ -211,4 +214,4 @@ const styles = StyleSheet.create({
     disabledText: {
         opacity: 0.5,
     },
-});
+})

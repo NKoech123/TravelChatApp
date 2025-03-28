@@ -46,7 +46,6 @@ export default function HomeScreen() {
         }
     }, [chatsError])
 
-
     useEffect(() => {
         const keyboardWillShow = Keyboard.addListener(
             Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow',
@@ -67,8 +66,6 @@ export default function HomeScreen() {
         }
     }, [])
 
-
-
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
@@ -81,7 +78,7 @@ export default function HomeScreen() {
             >
                 {chatsLoading && <Spinner />}
 
-                {chats.map((chat) => (
+                {chats.map(chat => (
                     <ChatItem
                         key={chat.id}
                         title={chat.title}
@@ -111,9 +108,7 @@ export default function HomeScreen() {
                 snapPoints={[isKeyboardVisible ? '90%' : '65%']}
                 enableContentPanningGesture={false}
             >
-
                 <NewChatForm closeModal={() => setIsCreatingNewChat(false)} />
-
             </CustomBottomSheet>
         </SafeAreaView>
     )
