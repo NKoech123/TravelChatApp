@@ -11,7 +11,7 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(uuid())
+  id            String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   email         String    @unique
   firstName     String?
   lastName      String?
@@ -24,7 +24,7 @@ model User {
 }
 
 model Chat {
-  id          String    @id @default(uuid())
+  id          String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
 
   title       String
   description String?
@@ -39,7 +39,7 @@ model Chat {
 }
 
 model Message {
-  id        String   @id @default(uuid())
+  id        String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   content   String
   isAI      Boolean  @default(false)
   chatId    String   @db.Uuid  
