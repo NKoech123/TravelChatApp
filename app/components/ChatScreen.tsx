@@ -19,20 +19,19 @@ interface ChatScreenProps {
     id: string
 }
 
-
 const ThinkingIndicator = () => {
-    const [dots, setDots] = useState('');
+    const [dots, setDots] = useState('')
 
     useEffect(() => {
         const interval = setInterval(() => {
             setDots(prev => {
-                if (prev.length >= 3) return '';
-                return prev + '.';
-            });
-        }, 500);
+                if (prev.length >= 3) return ''
+                return prev + '.'
+            })
+        }, 500)
 
-        return () => clearInterval(interval);
-    }, []);
+        return () => clearInterval(interval)
+    }, [])
 
     return (
         <View style={styles.thinkingContainer}>
@@ -40,11 +39,11 @@ const ThinkingIndicator = () => {
                 <Text style={styles.thinkingText}>AI is thinking{dots}</Text>
             </View>
         </View>
-    );
-};
+    )
+}
 
 export const ChatScreen = ({ id }: ChatScreenProps) => {
-    const scrollViewRef = useRef<ScrollView>(null);
+    const scrollViewRef = useRef<ScrollView>(null)
     const actions = useActions()
 
     const { messagesById, messagesLoading, messagesError } = useSelector(
@@ -55,20 +54,18 @@ export const ChatScreen = ({ id }: ChatScreenProps) => {
 
     const messages = useMemo(() => {
         return Object.values(messagesById).sort((a, b) => {
-            const timestampA = a.timestamp || '';
-            const timestampB = b.timestamp || '';
-            return timestampA.localeCompare(timestampB);
-        });
+            const timestampA = a.timestamp || ''
+            const timestampB = b.timestamp || ''
+            return timestampA.localeCompare(timestampB)
+        })
     }, [messagesById])
 
     useLayoutEffect(() => {
         const timer = setTimeout(() => {
-            scrollViewRef.current?.scrollToEnd({ animated: false });
-        }, 100);
-        return () => clearTimeout(timer);
-    }, [messages, isAIThinking]);
-
-
+            scrollViewRef.current?.scrollToEnd({ animated: false })
+        }, 100)
+        return () => clearTimeout(timer)
+    }, [messages, isAIThinking])
 
     useEffect(() => {
         if (id) {
@@ -117,10 +114,16 @@ export const ChatScreen = ({ id }: ChatScreenProps) => {
             </ScrollView>
 
             <MessageTextInput
-                onSubmit={() => { console.log('submit') }}
-                scrollToBottom={() => scrollViewRef.current?.scrollToEnd({ animated: true })}
+                onSubmit={() => {
+                    console.log('submit')
+                }}
+                scrollToBottom={() =>
+                    scrollViewRef.current?.scrollToEnd({ animated: true })
+                }
                 chatId={id}
-                setIsAIThinking={(isAIThinking: boolean) => setIsAIThinking(isAIThinking)}
+                setIsAIThinking={(isAIThinking: boolean) =>
+                    setIsAIThinking(isAIThinking)
+                }
                 aiIsThinking={isAIThinking}
             />
         </SafeAreaView>

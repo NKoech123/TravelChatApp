@@ -6,14 +6,14 @@ import {
     UserContextSchema,
     ChatRecordSchema,
     ChatInputsSchema,
-    MessageInputSchema,
-    MessageInputsSchema,
 } from '../../../server/data-model/types/src'
 import prisma from './clients/prisma-client'
 import { Prisma } from '@prisma/client'
 import { prismaErrorHandler } from './clients/prisma-error-handler'
 import { logger } from '../../log-utils'
 import { getRequestContext } from './user-server-context'
+
+import { llmService } from './llm-service'
 
 class ChatService {
     async getUserChats(): Promise<ChatsSchema> {
@@ -154,8 +154,12 @@ class ChatService {
         messageForInsert.userId = userContext.id ?? ''
         messageForInsert.chatId = chatId
 
-        if (messageForInsert.isAI) {
-            messageForInsert.content = 'This is a test response from AI'
+        if (messageForInsert.isAI && chatId) {
+            const aiResponse = await llmService.generateLLMResponse(
+                messageForInsert.content as string,
+                chatId
+            )
+            messageForInsert.content = aiResponse
         }
 
         let result = null

@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC } from 'react'
 
 import { useState, useMemo, useEffect, useRef, useLayoutEffect } from 'react'
 import {
@@ -18,26 +18,27 @@ import { useSelector, useActions } from '@/ui/state/hooks'
 import { Spinner } from '@/ui/components/Spinner'
 
 interface MessageTextInputProps {
-    onSubmit: () => void;
-    scrollToBottom: () => void;
-    setIsAIThinking: (isAIThinking: boolean) => void;
-    aiIsThinking: boolean;
-    chatId: string;
+    onSubmit: () => void
+    scrollToBottom: () => void
+    setIsAIThinking: (isAIThinking: boolean) => void
+    aiIsThinking: boolean
+    chatId: string
 }
 
-export const MessageTextInput: FC<MessageTextInputProps> = ({ onSubmit, scrollToBottom, chatId, aiIsThinking }) => {
-
+export const MessageTextInput: FC<MessageTextInputProps> = ({
+    onSubmit,
+    scrollToBottom,
+    chatId,
+    aiIsThinking,
+    setIsAIThinking,
+}) => {
     const actions = useActions()
-
-    const [newMessage, setNewMessage] = useState('');
-    const [isAIThinking, setIsAIThinking] = useState(aiIsThinking);
+    const [newMessage, setNewMessage] = useState('')
 
     const handleSendMessage = () => {
-        if (!newMessage.trim()) return;
+        if (!newMessage.trim()) return
 
-        // scrollViewRef.current?.scrollToEnd({ animated: true });
         scrollToBottom()
-
         setNewMessage('')
         actions.upsertMessage({
             chatId: chatId,
@@ -47,8 +48,6 @@ export const MessageTextInput: FC<MessageTextInputProps> = ({ onSubmit, scrollTo
                 content: newMessage,
             },
             handleSuccess: (messages: MessageSchema[]) => {
-                // Scroll to bottom immediately after sending
-                // scrollViewRef.current?.scrollToEnd({ animated: true });
                 scrollToBottom()
 
                 // LLM call to get response
@@ -63,14 +62,13 @@ export const MessageTextInput: FC<MessageTextInputProps> = ({ onSubmit, scrollTo
                         },
                         handleSuccess: (messages: MessageSchema[]) => {
                             setIsAIThinking(false)
-
+                            scrollToBottom()
                         },
                     })
-                }, 5000) // 5000 milliseconds = 5 seconds
+                }, 5000)
             },
         })
     }
-
 
     return (
         <KeyboardAvoidingView
@@ -193,7 +191,4 @@ const styles = StyleSheet.create({
     sendButton: {
         padding: 8,
     },
-
 })
-
-

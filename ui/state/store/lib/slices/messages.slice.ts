@@ -100,8 +100,11 @@ export const messagesSlice = createSlice({
         builder.addCase(
             upsertMessage.pending,
             (state: MessagesState, action) => {
+                const { message } = action.meta.arg
                 state.messagesError = initialMessagesState.messagesError
-                state.messagesLoading = true
+                if (!message.isAI) {
+                    state.messagesLoading = true
+                }
             }
         )
 

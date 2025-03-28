@@ -46,6 +46,7 @@
         "expo-web-browser": "~14.0.2",
         "fastify": "^5.2.2",
         "fluent-json-schema": "^5.0.0",
+        "gpt-tokenizer": "^2.9.0",
         "json-schema-to-typescript": "^15.0.4",
         "openai": "^4.90.0",
         "pino": "^9.6.0",
