@@ -40,13 +40,13 @@ export default function HomeScreen() {
         }
     }, [])
 
-    // useEffect(() => {
-    //     if (chatsError) {
-    //         console.error(chatsError)
-    //     }
-    // }, [chatsError])
+    useEffect(() => {
+        if (chatsError) {
+            console.error(chatsError)
+        }
+    }, [chatsError])
 
-    // Add keyboard listeners
+
     useEffect(() => {
         const keyboardWillShow = Keyboard.addListener(
             Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow',
@@ -67,9 +67,7 @@ export default function HomeScreen() {
         }
     }, [])
 
-    const handleCreateNewChat = () => {
-        setIsCreatingNewChat(true)
-    }
+
 
     return (
         <SafeAreaView style={styles.container}>
@@ -102,6 +100,7 @@ export default function HomeScreen() {
                     <Text style={styles.createButtonText}>CREATE NEW</Text>
                 </TouchableOpacity>
             )}
+
             <CustomBottomSheet
                 visible={isCreatingNewChat}
                 onClose={() => setIsCreatingNewChat(false)}
@@ -112,11 +111,9 @@ export default function HomeScreen() {
                 snapPoints={[isKeyboardVisible ? '90%' : '65%']}
                 enableContentPanningGesture={false}
             >
-                <View style={{
-                    backgroundColor: '#FDF8EF',
-                }}>
-                    <NewChatForm closeModal={() => setIsCreatingNewChat(false)} />
-                </View>
+
+                <NewChatForm closeModal={() => setIsCreatingNewChat(false)} />
+
             </CustomBottomSheet>
         </SafeAreaView>
     )

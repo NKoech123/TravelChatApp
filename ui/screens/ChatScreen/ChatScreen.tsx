@@ -8,8 +8,9 @@ import {
 } from 'react-native'
 
 import { useSelector, useActions } from '@/ui/state/hooks'
-import { Spinner } from '@/ui/components/Spinner/Spinner'
-import { MessageTextInput } from '@/ui/components/MessageTextInput/MessageTextInput'
+import { MessageTextInput, Spinner, TruncatedText } from '@/ui/components'
+
+
 interface ChatScreenProps {
     id: string
 }
@@ -36,6 +37,7 @@ const ThinkingIndicator = () => {
         </View>
     )
 }
+
 
 export const ChatScreen = ({ id }: ChatScreenProps) => {
     const scrollViewRef = useRef<ScrollView>(null)
@@ -83,17 +85,27 @@ export const ChatScreen = ({ id }: ChatScreenProps) => {
                         message.isAI ? (
                             <View style={styles.messageContainer} key={index}>
                                 <View style={styles.message}>
-                                    <Text style={styles.messageText}>
-                                        {message.content}
-                                    </Text>
+                                    <TruncatedText text={message.content || ''}
+                                        maxLines={3}
+                                        style={{
+                                            color: 'white',
+                                            fontSize: 16,
+                                            fontFamily: 'JetBrainsMono',
+                                            lineHeight: 24,
+                                        }}
+                                    />
                                 </View>
                             </View>
+
+
                         ) : (
                             <View
-                                style={[
-                                    styles.messageContainer,
-                                    styles.replyContainer,
-                                ]}
+                                style={
+                                    [
+                                        styles.messageContainer,
+                                        styles.replyContainer,
+                                    ]
+                                }
                                 key={index}
                             >
                                 <View style={styles.replyMessage}>
@@ -106,7 +118,7 @@ export const ChatScreen = ({ id }: ChatScreenProps) => {
                     )
                 )}
                 {isAIThinking && <ThinkingIndicator />}
-            </ScrollView>
+            </ScrollView >
 
             <MessageTextInput
                 onSubmit={() => {
@@ -121,7 +133,7 @@ export const ChatScreen = ({ id }: ChatScreenProps) => {
                 }
                 aiIsThinking={isAIThinking}
             />
-        </SafeAreaView>
+        </SafeAreaView >
     )
 }
 
