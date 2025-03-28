@@ -36,7 +36,7 @@ export const fetchWrapper = async (
         const requestOptions: RequestOptions = {
             method: options.method,
             headers: {
-                nomadcontext: fetchWrapperContext,
+                apiContext: fetchWrapperContext,
                 Accept: 'application/json',
                 'Content-Type': 'application/json;charset=UTF-8',
                 ...options.headers,
@@ -48,6 +48,9 @@ export const fetchWrapper = async (
             requestOptions['body'] = JSON.stringify(options.body)
         }
 
+        console.log('Request inputs', options.url, requestOptions)
+
+        // Perform the REST call
         const resp = await fetch(options.url, requestOptions)
 
         const respJson = await resp.json()
@@ -57,10 +60,12 @@ export const fetchWrapper = async (
             json: respJson,
         })
 
+        // Handle other errors
         if (resp.status >= 400) {
             throw new Error(respJson.message || 'Request failed')
         }
 
+        // Return back the response json
         return respJson
     } catch (error) {
         console.error('Fetch error:', error)

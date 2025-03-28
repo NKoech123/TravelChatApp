@@ -1,9 +1,6 @@
-//create a chat page that displays the chat messages
-
-import { useEffect, useState } from 'react'
 import { View, Text, TouchableOpacity } from 'react-native'
 import { Stack, useLocalSearchParams, router } from 'expo-router'
-import { ChatScreen } from '@/app/components/ChatScreen'
+import { ChatScreen } from '@/ui/screens'
 import { ChevronLeftIcon } from 'react-native-heroicons/mini'
 import { useSelector } from '@/ui/state/hooks'
 

@@ -58,12 +58,12 @@ function RootLayoutNav() {
                                 headerShown: false,
                             }}
                         />
-                        <Stack.Screen
-                            name="chat"
+                        {/* <Stack.Screen
+                            name="chats"
                             options={{
                                 headerShown: false,
                             }}
-                        />
+                        /> */}
                     </Stack>
                     <StatusBar
                         style={colorScheme === 'dark' ? 'light' : 'dark'}

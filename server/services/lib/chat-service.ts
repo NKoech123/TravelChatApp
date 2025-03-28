@@ -6,8 +6,6 @@ import {
     UserContextSchema,
     ChatRecordSchema,
     ChatInputsSchema,
-    MessageInputSchema,
-    MessageInputsSchema,
 } from '../../../server/data-model/types/src'
 import prisma from './clients/prisma-client'
 import { Prisma } from '@prisma/client'
@@ -15,6 +13,7 @@ import { prismaErrorHandler } from './clients/prisma-error-handler'
 import { logger } from '../../log-utils'
 import { getRequestContext } from './user-server-context'
 
+import { llmService } from './llm-service'
 
 class ChatService {
     async getUserChats(): Promise<ChatsSchema> {
@@ -66,7 +65,7 @@ class ChatService {
         }
     }
 
-    async upsertChat(chat: ChatRecordSchema): Promise<ChatSchema> {
+    async upsertChat(chat: ChatSchema): Promise<ChatSchema> {
         const userContext = getRequestContext()
         if (!chat.userId) {
             // for standard data, we need to set the userId
@@ -87,6 +86,7 @@ class ChatService {
             }
 
             return {
+                id: result.id,
                 title: result.title,
                 description: result.description,
                 timestamp:
@@ -103,28 +103,23 @@ class ChatService {
         }
     }
 
-    async upsertChats(chats: ChatInputsSchema): Promise<ChatsSchema> {
+    async upsertChats(chats: ChatSchema[]): Promise<ChatsSchema> {
         const results: ChatsSchema = { chats: [] }
 
-        for (const chat of chats.chats ?? []) {
+        for (const chat of chats) {
             results.chats?.push(await this.upsertChat(chat))
         }
         return results
     }
 
     async getChatMessages(chatId: string) {
+        const userContext = getRequestContext()
+
         try {
             const result: MessagesSchema = { messages: [] }
             const messages = await prisma.message.findMany({
-                where: { chatId },
-                include: {
-                    user: {
-                        select: {
-                            id: true,
-                            email: true,
-                        },
-                    },
-                },
+                where: { chatId, userId: userContext.id },
+
                 orderBy: {
                     createdAt: 'asc',
                 },
@@ -132,7 +127,7 @@ class ChatService {
             for (const msg of messages) {
                 result.messages.push({
                     ...msg,
-                    createdAt: msg.createdAt.toISOString(),
+                    timestamp: msg.createdAt.toISOString(),
                 })
             }
 
@@ -149,8 +144,10 @@ class ChatService {
         }
     }
 
-    async upsertMessage(chatId: string, message: MessageSchema): Promise<MessageSchema> {
-
+    async upsertMessage(
+        chatId: string,
+        message: MessageSchema
+    ): Promise<MessageSchema> {
         const userContext = getRequestContext()
 
         let messageForInsert = message
@@ -158,13 +155,20 @@ class ChatService {
         messageForInsert.userId = userContext.id ?? ''
         messageForInsert.chatId = chatId
 
+        if (messageForInsert.isAI && chatId) {
+            const aiResponse = await llmService.generateLLMResponse(
+                messageForInsert.content as string,
+                chatId
+            )
+            messageForInsert.content = aiResponse
+        }
+
         let result = null
 
         if (!messageForInsert.id) {
             result = await prisma.message.create({
                 data: messageForInsert as Prisma.MessageCreateInput,
             })
-
         } else {
             result = await prisma.message.update({
                 where: { id: messageForInsert.id },
@@ -178,7 +182,10 @@ class ChatService {
         } as MessageSchema
     }
 
-    async upsertChatMessages(chatId: string, messages: MessagesSchema): Promise<MessagesSchema> {
+    async upsertChatMessages(
+        chatId: string,
+        messages: MessagesSchema
+    ): Promise<MessagesSchema> {
         const results: MessagesSchema = { messages: [] }
 
         for (const msg of messages.messages ?? []) {

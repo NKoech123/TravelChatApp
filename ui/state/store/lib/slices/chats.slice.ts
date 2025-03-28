@@ -43,7 +43,7 @@ export const upsertChat = createAsyncThunk(
                 method: 'POST',
                 url: `${apiDomain}/api/chats`,
                 requiresAccessToken: false,
-                body: chats,
+                body: { chats: chats.chats },
             })) as ChatsSchema
 
             for (const chat of respJson.chats ?? []) {
@@ -51,6 +51,7 @@ export const upsertChat = createAsyncThunk(
                     throw new Error(chat.error)
                 }
             }
+            console.log('respJson chats', respJson.chats)
 
             handleSuccess()
             return respJson.chats as ChatSchema[]
@@ -59,26 +60,6 @@ export const upsertChat = createAsyncThunk(
                 errorMessage: `${error}`,
             })
         }
-    }
-)
-
-export const deleteChats = createAsyncThunk(
-    'chats/deleteChats',
-    async (data: { chatIds: string[]; chatsToRemove: ChatSchema[] }) => {
-        const { chatIds } = data
-
-        const respJson = await fetchWrapper({
-            method: 'DELETE',
-            url: `${apiDomain}/api/chats`,
-            requiresAccessToken: true,
-            body: { chatIds },
-        })
-
-        if (respJson.error) {
-            throw new Error(respJson.error)
-        }
-
-        return respJson
     }
 )
 
@@ -133,33 +114,6 @@ export const chatsSlice = createSlice({
             state.chatsError = `Error in upsertChat
                 ${errorMessage}
                 Request Id: ${action.meta.requestId}`
-        })
-
-        builder.addCase(deleteChats.pending, (state: ChatsState, action) => {
-            state.chatsError = initialChatsState.chatsError
-            state.chatsLoading = true
-
-            const { chatIds } = action.meta.arg
-
-            for (const chatId of chatIds) {
-                delete state.chatsById[chatId]
-            }
-        })
-
-        builder.addCase(deleteChats.fulfilled, (state: ChatsState) => {
-            state.chatsError = initialChatsState.chatsError
-            state.chatsLoading = initialChatsState.chatsLoading
-        })
-
-        builder.addCase(deleteChats.rejected, (state: ChatsState, action) => {
-            state.chatsError = action.error.message as string
-            state.chatsLoading = initialChatsState.chatsLoading
-
-            const { chatsToRemove } = action.meta.arg
-
-            for (const chat of chatsToRemove) {
-                state.chatsById[chat.id as string] = chat
-            }
         })
     },
 })
