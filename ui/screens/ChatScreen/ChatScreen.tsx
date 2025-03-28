@@ -126,6 +126,7 @@ export const ChatScreen = ({ id }: ChatScreenProps) => {
                 )}
             </ScrollView>
 
+
             <MessageTextInput
                 onSubmit={() => {
                     console.log('submit')
@@ -139,6 +140,7 @@ export const ChatScreen = ({ id }: ChatScreenProps) => {
                 }
                 aiIsThinking={isAIThinking}
             />
+
         </SafeAreaView>
     )
 }

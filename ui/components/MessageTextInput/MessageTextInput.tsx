@@ -81,6 +81,7 @@ export const MessageTextInput: FC<MessageTextInputProps> = ({
                         multiline
                         onChangeText={text => setNewMessage(text)}
                         value={newMessage}
+                        numberOfLines={4}
                     />
 
                     <TouchableOpacity
@@ -118,6 +119,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 12,
         borderWidth: 1,
         borderColor: '#00000033',
+        marginBottom: 16,
     },
     input: {
         flex: 1,
