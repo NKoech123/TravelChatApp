@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useMemo, useEffect, useRef, useLayoutEffect } from 'react'
 import {
     StyleSheet,
     Text,
@@ -8,83 +8,121 @@ import {
     KeyboardAvoidingView,
     Platform,
     SafeAreaView,
+    ScrollView,
 } from 'react-native'
-import { ArrowUpIcon } from 'react-native-heroicons/mini';
-import { MessageSchema } from '@nicholas/types';
-
+import { ArrowUpIcon } from 'react-native-heroicons/mini'
+import { MessageSchema } from '@nicholas/types'
+import { useSelector, useActions } from '@/ui/state/hooks'
+import { Spinner } from '@/ui/components/Spinner'
+import { MessageTextInput } from '@/ui/components/MessageTextInput'
 interface ChatScreenProps {
     id: string
 }
 
+
+const ThinkingIndicator = () => {
+    const [dots, setDots] = useState('');
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setDots(prev => {
+                if (prev.length >= 3) return '';
+                return prev + '.';
+            });
+        }, 500);
+
+        return () => clearInterval(interval);
+    }, []);
+
+    return (
+        <View style={styles.thinkingContainer}>
+            <View style={styles.thinkingBubble}>
+                <Text style={styles.thinkingText}>AI is thinking{dots}</Text>
+            </View>
+        </View>
+    );
+};
+
 export const ChatScreen = ({ id }: ChatScreenProps) => {
-    const [messages, setMessages] = useState<MessageSchema[]>([
-        {
-            id: '1',
-            content: 'Hey Nicholas',
-            isAI: true,
-            chatId: id,
-            userId: '1',
-            timestamp: new Date().toISOString(),
-        },
-        {
-            id: '2',
-            content: 'Where are you looking to go',
-            isAI: false,
-            chatId: id,
-            userId: '1',
-            timestamp: new Date().toISOString(),
-        },
-    ])
+    const scrollViewRef = useRef<ScrollView>(null);
+    const actions = useActions()
 
-    const [newMessage, setNewMessage] = useState('')
+    const { messagesById, messagesLoading, messagesError } = useSelector(
+        state => state.messages
+    )
 
-    const handleSendMessage = () => {
-        console.log('send message')
-    }
+    const [isAIThinking, setIsAIThinking] = useState(false)
+
+    const messages = useMemo(() => {
+        return Object.values(messagesById).sort((a, b) => {
+            const timestampA = a.timestamp || '';
+            const timestampB = b.timestamp || '';
+            return timestampA.localeCompare(timestampB);
+        });
+    }, [messagesById])
+
+    useLayoutEffect(() => {
+        const timer = setTimeout(() => {
+            scrollViewRef.current?.scrollToEnd({ animated: false });
+        }, 100);
+        return () => clearTimeout(timer);
+    }, [messages, isAIThinking]);
+
+
+
+    useEffect(() => {
+        if (id) {
+            actions.getMessages(id)
+        }
+    }, [id])
 
     return (
         <SafeAreaView style={styles.container}>
-            <View style={styles.messages}>
-                {messages.map((message, index) => (
-                    message.isAI ? (
-                        <View style={styles.messageContainer} key={index}>
-                            <View style={styles.message}>
-                                <Text style={styles.messageText}>
-                                    {message.content}
-                                </Text>
-                            </View>
-                        </View>
-                    ) : (
-                        <View style={[styles.messageContainer, styles.replyContainer]} key={index}>
-                            <View style={styles.replyMessage}>
-                                <Text style={styles.replyText}>{message.content}</Text>
-                            </View>
-                        </View>
-                    )
-                ))}
-
-            </View>
-
-            <KeyboardAvoidingView
-                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                style={styles.inputContainer}
+            <ScrollView
+                ref={scrollViewRef}
+                style={styles.messages}
+                contentContainerStyle={styles.messagesContent}
+                showsVerticalScrollIndicator={false}
             >
-                <View style={styles.inputWrapper}>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Tell us your travel plans..."
-                        placeholderTextColor="#999"
-                        multiline
-                    />
+                {messagesLoading ? (
+                    <Spinner />
+                ) : (
+                    messages.map((message, index) =>
+                        message.isAI ? (
+                            <View style={styles.messageContainer} key={index}>
+                                <View style={styles.message}>
+                                    <Text style={styles.messageText}>
+                                        {message.content}
+                                    </Text>
+                                </View>
+                            </View>
+                        ) : (
+                            <View
+                                style={[
+                                    styles.messageContainer,
+                                    styles.replyContainer,
+                                ]}
+                                key={index}
+                            >
+                                <View style={styles.replyMessage}>
+                                    <Text style={styles.replyText}>
+                                        {message.content}
+                                    </Text>
+                                </View>
+                            </View>
+                        )
+                    )
+                )}
+                {isAIThinking && <ThinkingIndicator />}
+            </ScrollView>
 
-                    <TouchableOpacity style={styles.sendButton}
-                        disabled={!newMessage}
-                        onPress={handleSendMessage}
-                    >
-                        <ArrowUpIcon size={24} color="#000000" />
-                    </TouchableOpacity>
-                </View>
-            </KeyboardAvoidingView>
+            <MessageTextInput
+                onSubmit={() => { console.log('submit') }}
+                scrollToBottom={() => scrollViewRef.current?.scrollToEnd({ animated: true })}
+                chatId={id}
+                setIsAIThinking={(isAIThinking: boolean) => setIsAIThinking(isAIThinking)}
+                aiIsThinking={isAIThinking}
+            />
         </SafeAreaView>
     )
 }
@@ -109,11 +147,15 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 16,
         fontFamily: 'JetBrainsMono',
-        marginRight: 28, // To offset the back button width and keep title centered
+        marginRight: 28,
     },
     messages: {
         flex: 1,
+    },
+    messagesContent: {
         padding: 16,
+        paddingBottom: 80,
+        flexGrow: 1,
     },
     messageContainer: {
         marginBottom: 16,
@@ -129,7 +171,6 @@ const styles = StyleSheet.create({
         borderBottomLeftRadius: 0,
         position: 'relative',
         marginLeft: 4,
-        transform: [{ rotate: '-1deg' }],
     },
     messageText: {
         color: 'white',
@@ -149,7 +190,6 @@ const styles = StyleSheet.create({
         borderBottomRightRadius: 0,
         position: 'relative',
         marginRight: 4,
-        transform: [{ rotate: '1deg' }],
     },
     replyText: {
         color: '#000000',
@@ -180,5 +220,27 @@ const styles = StyleSheet.create({
     },
     sendButton: {
         padding: 8,
+    },
+    thinkingContainer: {
+        marginBottom: 16,
+        maxWidth: '85%',
+        alignSelf: 'flex-start',
+        position: 'relative',
+    },
+    thinkingBubble: {
+        backgroundColor: '#000',
+        padding: 12,
+        paddingHorizontal: 16,
+        borderRadius: 24,
+        borderBottomLeftRadius: 0,
+        position: 'relative',
+        marginLeft: 4,
+        opacity: 0.7,
+    },
+    thinkingText: {
+        color: 'white',
+        fontSize: 16,
+        fontFamily: 'JetBrainsMono',
+        lineHeight: 24,
     },
 })

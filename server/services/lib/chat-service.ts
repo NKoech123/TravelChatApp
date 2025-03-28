@@ -15,7 +15,6 @@ import { prismaErrorHandler } from './clients/prisma-error-handler'
 import { logger } from '../../log-utils'
 import { getRequestContext } from './user-server-context'
 
-
 class ChatService {
     async getUserChats(): Promise<ChatsSchema> {
         const userContext = getRequestContext() as UserContextSchema
@@ -113,18 +112,13 @@ class ChatService {
     }
 
     async getChatMessages(chatId: string) {
+        const userContext = getRequestContext()
+
         try {
             const result: MessagesSchema = { messages: [] }
             const messages = await prisma.message.findMany({
-                where: { chatId },
-                include: {
-                    user: {
-                        select: {
-                            id: true,
-                            email: true,
-                        },
-                    },
-                },
+                where: { chatId, userId: userContext.id },
+
                 orderBy: {
                     createdAt: 'asc',
                 },
@@ -132,7 +126,7 @@ class ChatService {
             for (const msg of messages) {
                 result.messages.push({
                     ...msg,
-                    createdAt: msg.createdAt.toISOString(),
+                    timestamp: msg.createdAt.toISOString(),
                 })
             }
 
@@ -149,8 +143,10 @@ class ChatService {
         }
     }
 
-    async upsertMessage(chatId: string, message: MessageSchema): Promise<MessageSchema> {
-
+    async upsertMessage(
+        chatId: string,
+        message: MessageSchema
+    ): Promise<MessageSchema> {
         const userContext = getRequestContext()
 
         let messageForInsert = message
@@ -158,13 +154,16 @@ class ChatService {
         messageForInsert.userId = userContext.id ?? ''
         messageForInsert.chatId = chatId
 
+        if (messageForInsert.isAI) {
+            messageForInsert.content = 'This is a test response from AI'
+        }
+
         let result = null
 
         if (!messageForInsert.id) {
             result = await prisma.message.create({
                 data: messageForInsert as Prisma.MessageCreateInput,
             })
-
         } else {
             result = await prisma.message.update({
                 where: { id: messageForInsert.id },
@@ -178,7 +177,10 @@ class ChatService {
         } as MessageSchema
     }
 
-    async upsertChatMessages(chatId: string, messages: MessagesSchema): Promise<MessagesSchema> {
+    async upsertChatMessages(
+        chatId: string,
+        messages: MessagesSchema
+    ): Promise<MessagesSchema> {
         const results: MessagesSchema = { messages: [] }
 
         for (const msg of messages.messages ?? []) {

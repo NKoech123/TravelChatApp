@@ -113,18 +113,18 @@ export interface ChatsSchema {
 /** Add a Description in libs/data-model/schema/generate-descriptions.ts  */
 
 export interface MessageInputSchema {
-  content: string;
-  isAI: boolean;
-  chatId: string;
+  content?: string;
+  isAI?: boolean;
+  chatId?: string;
 }
 
 /** Add a Description in libs/data-model/schema/generate-descriptions.ts  */
 
 export interface MessageInputsSchema {
   messages: {
-    content: string;
-    isAI: boolean;
-    chatId: string;
+    content?: string;
+    isAI?: boolean;
+    chatId?: string;
   }[];
 }
 
@@ -150,7 +150,7 @@ export interface MessageSchema {
   isAI?: boolean;
   chatId?: string;
   userId?: string;
-  timestamp: string;
+  timestamp?: string;
 }
 
 /** Add a Description in libs/data-model/schema/generate-descriptions.ts  */
@@ -164,6 +164,6 @@ export interface MessagesSchema {
     isAI?: boolean;
     chatId?: string;
     userId?: string;
-    timestamp: string;
+    timestamp?: string;
   }[];
 }
