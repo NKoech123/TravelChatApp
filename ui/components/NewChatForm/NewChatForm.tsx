@@ -6,6 +6,7 @@ import {
     TextInput,
     StyleSheet,
     ActivityIndicator,
+    Platform,
 } from 'react-native'
 import { ChatInputSchema, ChatSchema, ChatsSchema } from '@nicholas/types'
 import { useActions, useSelector } from '@/ui/state/hooks'
@@ -21,13 +22,18 @@ interface FormData {
 
 export const NewChatForm: FC<NewChatFormProps> = ({ closeModal }) => {
     const actions = useActions()
-
     const { chatsLoading } = useSelector(state => state.chats)
-
     const [formData, setFormData] = useState<FormData>({
         title: '',
         description: '',
     })
+
+    const resetFormData = () => {
+        setFormData({
+            title: '',
+            description: '',
+        })
+    }
 
     const isFormValid = formData.title.trim().length > 0
 
@@ -45,71 +51,74 @@ export const NewChatForm: FC<NewChatFormProps> = ({ closeModal }) => {
             },
             handleSuccess: () => {
                 closeModal()
+                resetFormData()
             },
         })
     }
 
     return (
-        <View style={styles.formContainer}>
-            <Text style={styles.formTitle}>Create New Chat</Text>
-            <TextInput
-                placeholder="Name..."
-                style={[
-                    styles.inputField,
-                    !isFormValid &&
+        <View style={styles.container}>
+            <View style={styles.formContainer}>
+                <Text style={styles.formTitle}>Create New Chat</Text>
+                <TextInput
+                    placeholder="Name..."
+                    style={[
+                        styles.inputField,
+                        !isFormValid &&
                         formData.title.length > 0 &&
                         styles.inputError,
-                ]}
-                placeholderTextColor="#666"
-                value={formData.title}
-                onChangeText={text =>
-                    setFormData(prev => ({ ...prev, title: text }))
-                }
-                editable={!chatsLoading}
-            />
-
-            <TextInput
-                placeholder="Description of the chat"
-                style={[styles.inputField, styles.textArea]}
-                multiline={true}
-                numberOfLines={3}
-                placeholderTextColor="#666"
-                value={formData.description}
-                onChangeText={text =>
-                    setFormData(prev => ({ ...prev, description: text }))
-                }
-                editable={!chatsLoading}
-            />
-            <View style={styles.buttonContainer}>
-                <TouchableOpacity
-                    style={[styles.button, styles.cancelButton]}
-                    onPress={closeModal}
-                    disabled={chatsLoading}
-                >
-                    <Text
-                        style={[
-                            styles.cancelButtonText,
-                            chatsLoading && styles.disabledText,
-                        ]}
-                    >
-                        Cancel
-                    </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={[
-                        styles.button,
-                        styles.saveButton,
-                        !isFormValid && styles.disabledButton,
                     ]}
-                    disabled={!isFormValid || chatsLoading}
-                    onPress={handleCreateChat}
-                >
-                    {chatsLoading ? (
-                        <ActivityIndicator color="white" size="small" />
-                    ) : (
-                        <Text style={styles.saveButtonText}>Save</Text>
-                    )}
-                </TouchableOpacity>
+                    placeholderTextColor="#666"
+                    value={formData.title}
+                    onChangeText={text =>
+                        setFormData(prev => ({ ...prev, title: text }))
+                    }
+                    editable={!chatsLoading}
+                />
+
+                <TextInput
+                    placeholder="Description of the chat"
+                    style={[styles.inputField, styles.textArea]}
+                    multiline={true}
+                    numberOfLines={3}
+                    placeholderTextColor="#666"
+                    value={formData.description}
+                    onChangeText={text =>
+                        setFormData(prev => ({ ...prev, description: text }))
+                    }
+                    editable={!chatsLoading}
+                />
+                <View style={styles.buttonContainer}>
+                    <TouchableOpacity
+                        style={[styles.button, styles.cancelButton]}
+                        onPress={closeModal}
+                        disabled={chatsLoading}
+                    >
+                        <Text
+                            style={[
+                                styles.cancelButtonText,
+                                chatsLoading && styles.disabledText,
+                            ]}
+                        >
+                            Cancel
+                        </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={[
+                            styles.button,
+                            styles.saveButton,
+                            !isFormValid && styles.disabledButton,
+                        ]}
+                        disabled={!isFormValid || chatsLoading}
+                        onPress={handleCreateChat}
+                    >
+                        {chatsLoading ? (
+                            <ActivityIndicator color="white" size="small" />
+                        ) : (
+                            <Text style={styles.saveButtonText}>Save</Text>
+                        )}
+                    </TouchableOpacity>
+                </View>
             </View>
         </View>
     )
@@ -119,41 +128,9 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#FDF8EF',
-    },
-    header: {
-        padding: 16,
-        paddingTop: 24,
-        display: 'flex',
-        alignItems: 'center',
-    },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-    },
-    content: {
-        flex: 1,
-    },
-    scrollContent: {
-        padding: 16,
-    },
-    createButton: {
-        backgroundColor: 'black',
-        margin: 16,
-        padding: 16,
-        borderRadius: 0,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: 8,
-    },
-    createButtonText: {
-        color: 'white',
-        fontSize: 16,
-        fontWeight: '500',
-        fontFamily: 'JetBrainsMono',
+        paddingTop: 20,
     },
     formContainer: {
-        margin: 16,
         padding: 20,
         backgroundColor: 'white',
         borderRadius: 12,
@@ -164,6 +141,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.1,
         shadowRadius: 4,
         elevation: 3,
+        marginHorizontal: 16,
     },
     formTitle: {
         fontSize: 20,
@@ -224,4 +202,4 @@ const styles = StyleSheet.create({
     disabledText: {
         opacity: 0.5,
     },
-})
+});

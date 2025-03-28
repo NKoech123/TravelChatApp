@@ -3,18 +3,13 @@ import {
     StyleSheet,
     Text,
     View,
-    TextInput,
-    TouchableOpacity,
-    KeyboardAvoidingView,
-    Platform,
     SafeAreaView,
     ScrollView,
 } from 'react-native'
-import { ArrowUpIcon } from 'react-native-heroicons/mini'
-import { MessageSchema } from '@nicholas/types'
+
 import { useSelector, useActions } from '@/ui/state/hooks'
-import { Spinner } from '@/ui/components/Spinner'
-import { MessageTextInput } from '@/ui/components/MessageTextInput'
+import { Spinner } from '@/ui/components/Spinner/Spinner'
+import { MessageTextInput } from '@/ui/components/MessageTextInput/MessageTextInput'
 interface ChatScreenProps {
     id: string
 }
@@ -45,7 +40,7 @@ const ThinkingIndicator = () => {
 export const ChatScreen = ({ id }: ChatScreenProps) => {
     const scrollViewRef = useRef<ScrollView>(null)
     const actions = useActions()
-
+    console.log('chat room id', id)
     const { messagesById, messagesLoading, messagesError } = useSelector(
         state => state.messages
     )
@@ -129,6 +124,7 @@ export const ChatScreen = ({ id }: ChatScreenProps) => {
         </SafeAreaView>
     )
 }
+
 
 const styles = StyleSheet.create({
     container: {

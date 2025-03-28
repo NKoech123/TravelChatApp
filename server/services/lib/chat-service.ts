@@ -65,7 +65,7 @@ class ChatService {
         }
     }
 
-    async upsertChat(chat: ChatRecordSchema): Promise<ChatSchema> {
+    async upsertChat(chat: ChatSchema): Promise<ChatSchema> {
         const userContext = getRequestContext()
         if (!chat.userId) {
             // for standard data, we need to set the userId
@@ -86,6 +86,7 @@ class ChatService {
             }
 
             return {
+                id: result.id,
                 title: result.title,
                 description: result.description,
                 timestamp:
@@ -102,10 +103,11 @@ class ChatService {
         }
     }
 
-    async upsertChats(chats: ChatInputsSchema): Promise<ChatsSchema> {
+
+    async upsertChats(chats: ChatSchema[]): Promise<ChatsSchema> {
         const results: ChatsSchema = { chats: [] }
 
-        for (const chat of chats.chats ?? []) {
+        for (const chat of chats) {
             results.chats?.push(await this.upsertChat(chat))
         }
         return results

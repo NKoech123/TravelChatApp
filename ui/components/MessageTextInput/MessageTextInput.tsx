@@ -1,21 +1,19 @@
-import { FC } from 'react'
+import { FC, useEffect } from 'react'
 
-import { useState, useMemo, useEffect, useRef, useLayoutEffect } from 'react'
+import { useState } from 'react'
 import {
     StyleSheet,
-    Text,
     View,
     TextInput,
     TouchableOpacity,
     KeyboardAvoidingView,
     Platform,
-    SafeAreaView,
-    ScrollView,
+    Keyboard,
 } from 'react-native'
 import { ArrowUpIcon } from 'react-native-heroicons/mini'
 import { MessageSchema } from '@nicholas/types'
 import { useSelector, useActions } from '@/ui/state/hooks'
-import { Spinner } from '@/ui/components/Spinner'
+import { Spinner } from '@/ui/components/Spinner/Spinner'
 
 interface MessageTextInputProps {
     onSubmit: () => void
@@ -73,104 +71,46 @@ export const MessageTextInput: FC<MessageTextInputProps> = ({
     return (
         <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            style={styles.inputContainer}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
+            style={styles.keyboardAvoidingView}
         >
-            <View style={styles.inputWrapper}>
-                <TextInput
-                    style={styles.input}
-                    placeholder="Tell us your travel plans..."
-                    placeholderTextColor="#999"
-                    multiline
-                    onChangeText={text => setNewMessage(text)}
-                    value={newMessage}
-                />
+            <View style={styles.inputContainer}>
+                <View style={styles.inputWrapper}>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Tell us your travel plans..."
+                        placeholderTextColor="#999"
+                        multiline
+                        onChangeText={text => setNewMessage(text)}
+                        value={newMessage}
+                    />
 
-                <TouchableOpacity
-                    style={styles.sendButton}
-                    disabled={!newMessage}
-                    onPress={handleSendMessage}
-                >
-                    <ArrowUpIcon size={24} color="#000000" />
-                </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.sendButton}
+                        disabled={!newMessage}
+                        onPress={handleSendMessage}
+                    >
+                        <ArrowUpIcon size={24} color="#000000" />
+                    </TouchableOpacity>
+                </View>
             </View>
         </KeyboardAvoidingView>
     )
 }
 
 const styles = StyleSheet.create({
-    container: {
-        height: '100%',
+    keyboardAvoidingView: {
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
         backgroundColor: '#FDF8EF',
-    },
-    header: {
-        padding: 16,
-        borderBottomWidth: 1,
-        borderBottomColor: '#eee',
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    backButton: {
-        padding: 4,
-    },
-    headerTitle: {
-        flex: 1,
-        textAlign: 'center',
-        fontSize: 16,
-        fontFamily: 'JetBrainsMono',
-        marginRight: 28,
-    },
-    messages: {
-        flex: 1,
-    },
-    messagesContent: {
-        padding: 16,
-        paddingBottom: 80,
-        flexGrow: 1,
-    },
-    messageContainer: {
-        marginBottom: 16,
-        maxWidth: '85%',
-        alignSelf: 'flex-start',
-        position: 'relative',
-    },
-    message: {
-        backgroundColor: '#000',
-        padding: 12,
-        paddingHorizontal: 16,
-        borderRadius: 24,
-        borderBottomLeftRadius: 0,
-        position: 'relative',
-        marginLeft: 4,
-    },
-    messageText: {
-        color: 'white',
-        fontSize: 16,
-        fontFamily: 'JetBrainsMono',
-        lineHeight: 24,
-    },
-    replyContainer: {
-        alignSelf: 'flex-end',
-        marginBottom: 16,
-    },
-    replyMessage: {
-        backgroundColor: '#F5E6D3',
-        padding: 12,
-        paddingHorizontal: 16,
-        borderRadius: 24,
-        borderBottomRightRadius: 0,
-        position: 'relative',
-        marginRight: 4,
-    },
-    replyText: {
-        color: '#000000',
-        fontSize: 16,
-        fontFamily: 'JetBrainsMono',
-        lineHeight: 24,
     },
     inputContainer: {
         borderTopWidth: 1,
         borderTopColor: '#eee',
         padding: 16,
+        backgroundColor: '#FDF8EF',
     },
     inputWrapper: {
         flexDirection: 'row',

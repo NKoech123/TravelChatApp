@@ -1,6 +1,5 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { router } from 'expo-router'
-import { ChevronRightIcon } from 'react-native-heroicons/mini'
 import { ChevronRightSvg } from '@/assets/svgs/ChevronRight'
 interface ChatItemProps {
     title: string

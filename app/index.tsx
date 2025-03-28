@@ -5,20 +5,20 @@ import {
     ScrollView,
     TouchableOpacity,
     SafeAreaView,
-    TextInput,
+    KeyboardAvoidingView,
+    Platform,
+    Keyboard,
 } from 'react-native'
-import ChatItem from './components/ChatItem'
+import ChatItem from '@/ui/components/ChatItem/ChatItem'
 import { PlusIcon } from 'react-native-heroicons/mini'
 import { useSelector, useActions } from '@/ui/state/hooks'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Spinner } from '@/ui/components/Spinner'
-import { CustomBottomSheet } from '@/ui/components/CustomBottomSheet'
-import { NewChatForm } from '@/ui/components/NewChatForm'
+import { NewChatForm, CustomBottomSheet, Spinner } from '@/ui/components'
 
 export default function HomeScreen() {
     const actions = useActions()
     const initialRender = useRef(true)
-
+    const [isKeyboardVisible, setIsKeyboardVisible] = useState(false)
     const [isCreatingNewChat, setIsCreatingNewChat] = useState(false)
 
     const { chatsById, chatsLoading, chatsError } = useSelector(
@@ -40,11 +40,32 @@ export default function HomeScreen() {
         }
     }, [])
 
+    // useEffect(() => {
+    //     if (chatsError) {
+    //         console.error(chatsError)
+    //     }
+    // }, [chatsError])
+
+    // Add keyboard listeners
     useEffect(() => {
-        if (chatsError) {
-            console.error(chatsError)
+        const keyboardWillShow = Keyboard.addListener(
+            Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow',
+            () => {
+                setIsKeyboardVisible(true)
+            }
+        )
+        const keyboardWillHide = Keyboard.addListener(
+            Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide',
+            () => {
+                setIsKeyboardVisible(false)
+            }
+        )
+
+        return () => {
+            keyboardWillShow.remove()
+            keyboardWillHide.remove()
         }
-    }, [chatsError])
+    }, [])
 
     const handleCreateNewChat = () => {
         setIsCreatingNewChat(true)
@@ -62,12 +83,12 @@ export default function HomeScreen() {
             >
                 {chatsLoading && <Spinner />}
 
-                {chats.map((chat, index) => (
+                {chats.map((chat) => (
                     <ChatItem
-                        key={index}
+                        key={chat.id}
                         title={chat.title}
                         time={chat.timestamp as string}
-                        id={chat.id}
+                        id={chat.id as string}
                     />
                 ))}
             </ScrollView>
@@ -75,7 +96,7 @@ export default function HomeScreen() {
             {!isCreatingNewChat && (
                 <TouchableOpacity
                     style={styles.createButton}
-                    onPress={() => setIsCreatingNewChat(!isCreatingNewChat)}
+                    onPress={() => setIsCreatingNewChat(true)}
                 >
                     <PlusIcon size={24} color="white" />
                     <Text style={styles.createButtonText}>CREATE NEW</Text>
@@ -86,11 +107,16 @@ export default function HomeScreen() {
                 onClose={() => setIsCreatingNewChat(false)}
                 title="Add new chat"
                 hideTitle={true}
-                scrollable={true}
+                scrollable={false}
                 useModal={true}
-                snapPoints={['25%']}
+                snapPoints={[isKeyboardVisible ? '90%' : '65%']}
+                enableContentPanningGesture={false}
             >
-                <NewChatForm closeModal={() => setIsCreatingNewChat(false)} />
+                <View style={{
+                    backgroundColor: '#FDF8EF',
+                }}>
+                    <NewChatForm closeModal={() => setIsCreatingNewChat(false)} />
+                </View>
             </CustomBottomSheet>
         </SafeAreaView>
     )
@@ -195,5 +221,14 @@ const styles = StyleSheet.create({
         color: 'black',
         fontSize: 16,
         fontWeight: '500',
+    },
+    keyboardAvoidingView: {
+        flex: 1,
+        width: '100%',
+    },
+    formWrapper: {
+        flex: 1,
+        width: '100%',
+        paddingBottom: Platform.OS === 'ios' ? 20 : 0,
     },
 })
