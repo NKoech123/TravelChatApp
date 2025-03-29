@@ -15,6 +15,8 @@ import { View } from 'react-native'
 import { Provider } from 'react-redux'
 import { store } from '@/ui/state/store'
 
+import { KeyboardProvider } from 'react-native-keyboard-controller';
+
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync()
 
@@ -51,23 +53,19 @@ function RootLayoutNav() {
                 <ThemeProvider
                     value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}
                 >
-                    <Stack>
-                        <Stack.Screen
-                            name="index"
-                            options={{
-                                headerShown: false,
-                            }}
+                    <KeyboardProvider>
+                        <Stack>
+                            <Stack.Screen
+                                name="index"
+                                options={{
+                                    headerShown: false,
+                                }}
+                            />
+                        </Stack>
+                        <StatusBar
+                            style={colorScheme === 'dark' ? 'light' : 'dark'}
                         />
-                        {/* <Stack.Screen
-                            name="chats"
-                            options={{
-                                headerShown: false,
-                            }}
-                        /> */}
-                    </Stack>
-                    <StatusBar
-                        style={colorScheme === 'dark' ? 'light' : 'dark'}
-                    />
+                    </KeyboardProvider>
                 </ThemeProvider>
             </GestureHandlerRootView>
         </Provider>
