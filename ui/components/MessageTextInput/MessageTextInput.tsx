@@ -12,8 +12,7 @@ import {
 } from 'react-native'
 import { ArrowUpIcon } from 'react-native-heroicons/mini'
 import { MessageSchema } from '@nicholas/types'
-import { useSelector, useActions } from '@/ui/state/hooks'
-import { Spinner } from '@/ui/components/Spinner/Spinner'
+import { useActions } from '@/ui/state/hooks'
 
 interface MessageTextInputProps {
     onSubmit: () => void
@@ -69,13 +68,42 @@ export const MessageTextInput: FC<MessageTextInputProps> = ({
     return (
         <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
-            style={styles.keyboardAvoidingView}
+            keyboardVerticalOffset={90}
+            style={{
+                position: 'absolute',
+                bottom: 0,
+                left: 0,
+                right: 0,
+                backgroundColor: '#FDF8EF',
+            }}
         >
-            <View style={styles.inputContainer}>
-                <View style={styles.inputWrapper}>
+            <View
+                style={{
+                    borderTopWidth: 1,
+                    borderTopColor: '#eee',
+                    padding: 16,
+                    backgroundColor: '#FDF8EF',
+                }}
+            >
+                <View
+                    style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        backgroundColor: 'white',
+                        borderRadius: 24,
+                        paddingHorizontal: 12,
+                        borderWidth: 1,
+                        borderColor: '#00000033',
+                    }}
+                >
                     <TextInput
-                        style={styles.input}
+                        style={{
+                            flex: 1,
+                            fontSize: 16,
+                            paddingVertical: 12,
+                            paddingHorizontal: 8,
+                            fontFamily: 'JetBrainsMono',
+                        }}
                         placeholder="Tell us your travel plans..."
                         placeholderTextColor="#999"
                         multiline
@@ -84,7 +112,9 @@ export const MessageTextInput: FC<MessageTextInputProps> = ({
                     />
 
                     <TouchableOpacity
-                        style={styles.sendButton}
+                        style={{
+                            padding: 8,
+                        }}
                         disabled={!newMessage}
                         onPress={handleSendMessage}
                     >
@@ -95,38 +125,3 @@ export const MessageTextInput: FC<MessageTextInputProps> = ({
         </KeyboardAvoidingView>
     )
 }
-
-const styles = StyleSheet.create({
-    keyboardAvoidingView: {
-        position: 'absolute',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        backgroundColor: '#FDF8EF',
-    },
-    inputContainer: {
-        borderTopWidth: 1,
-        borderTopColor: '#eee',
-        padding: 16,
-        backgroundColor: '#FDF8EF',
-    },
-    inputWrapper: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: 'white',
-        borderRadius: 24,
-        paddingHorizontal: 12,
-        borderWidth: 1,
-        borderColor: '#00000033',
-    },
-    input: {
-        flex: 1,
-        fontSize: 16,
-        paddingVertical: 12,
-        paddingHorizontal: 8,
-        fontFamily: 'JetBrainsMono',
-    },
-    sendButton: {
-        padding: 8,
-    },
-})
