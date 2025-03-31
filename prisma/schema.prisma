@@ -1,0 +1,53 @@
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+  binaryTargets   = ["native", "linux-arm64-openssl-1.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  extensions = [uuidOssp(map: "uuid-ossp")]
+}
+
+model User {
+  id            String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  email         String    @unique
+  firstName     String?
+  lastName      String?
+  userName      String?
+
+  createdAt     DateTime  @default(now())
+
+  Chat          Chat[]   
+  Message       Message[]
+}
+
+model Chat {
+  id          String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+
+  title       String
+  description String?
+  userId     String @db.Uuid
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  User       User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Message    Message[]
+
+}
+
+model Message {
+  id        String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  content   String
+  isAI      Boolean  @default(false)
+  chatId    String   @db.Uuid  
+  userId    String   @db.Uuid
+
+  createdAt DateTime @default(now())
+
+  Chat     Chat  @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  User     User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+}

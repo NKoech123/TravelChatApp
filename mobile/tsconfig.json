@@ -1,0 +1,34 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "paths": {
+      "@/*": [
+        "./*"
+      ],
+      "@nicholas/services": [
+        "../server/services"
+      ],
+      "@nicholas/types": [
+        "../server/data-model/types/src"
+      ],
+      "@nicholas/schema": [
+        "../server/data-model/schema/src"
+      ],
+      "@nicholas/log-utils": [
+        "../server/log-utils"
+      ],
+      "@nicholas/client-utils": [
+        "./ui/client-utils"
+      ]
+    }
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "mobile/.expo/types/**/*.ts",
+    "mobile/expo-env.d.ts",
+    ".expo/types/**/*.ts",
+    "expo-env.d.ts"
+  ]
+}
