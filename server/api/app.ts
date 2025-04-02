@@ -17,7 +17,7 @@ app.register(cors, {
     origin: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Authorization', 'Content-Type', 'apiContext'],
-    credentials: true
+    credentials: true,
 })
 
 app.register(requestContext, {
