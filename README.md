@@ -1,6 +1,14 @@
-# Welcome to your Expo app 👋
+# Welcome to Travel Chat App 👋
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+## Architecture
+
+<img width="1060" alt="Screenshot 2025-04-02 at 4 43 24 AM" src="https://github.com/user-attachments/assets/fd3d8b93-9f1f-4332-beb0-ce609ae96731" />
+
+
+## API Documentation
+
+![image](https://github.com/user-attachments/assets/5d027dce-fc72-4a39-a9f7-cf4f74d8cd2e)
+
 
 ## Get started
 
