@@ -1,5 +1,14 @@
 # Welcome to Travel Chat App 👋
 
+## Tech UseD
+1. React (For Web)
+2. Expo React Native (For mobile)
+3. Redux (State Management)
+4. Fastify API
+5. Swagger UI (API documentation)
+6. Dockerized Postgres
+7. Prisma ORM
+
 ## Architecture
 
 <img width="1060" alt="Screenshot 2025-04-02 at 4 43 24 AM" src="https://github.com/user-attachments/assets/fd3d8b93-9f1f-4332-beb0-ce609ae96731" />
