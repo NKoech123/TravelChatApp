@@ -34,7 +34,7 @@ export function App() {
 
     return (
         <div
-            className={`md:grid md:grid-cols-[400px,1fr] h-screen bg-[#faf7f4]  overflow-hidden ${isMobileView ? 'flex' : ''}`}
+            className={`font-['Work_Sans'] md:grid md:grid-cols-[400px,1fr] h-screen bg-[#faf7f4]  overflow-hidden ${isMobileView ? 'flex' : ''}`}
         >
             <ChatsPanel isMobileView={isMobileView} />
             <RightHandPanel isMobileView={isMobileView} />

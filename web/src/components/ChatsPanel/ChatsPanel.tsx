@@ -12,7 +12,9 @@ interface ChatsPanelProps {
 
 export function ChatsPanel({ isMobileView }: ChatsPanelProps) {
     const actions = useActions()
-    const { chatsById, activeChatId, chatsLoading } = useSelector(state => state.chats)
+    const { chatsById, activeChatId, chatsLoading } = useSelector(
+        state => state.chats
+    )
     const navigate = useNavigate()
     const [showCreateChatModal, setShowCreateChatModal] = useState(false)
 
@@ -23,7 +25,6 @@ export function ChatsPanel({ isMobileView }: ChatsPanelProps) {
                 new Date(a.timestamp as string).getTime()
         )
     }, [chatsById])
-
 
     return (
         <section
@@ -54,17 +55,18 @@ export function ChatsPanel({ isMobileView }: ChatsPanelProps) {
                             />
                         ))
                     )}
-                    {
-                        chats.length === 0 && (
-                            <div className="flex items-center justify-center h-full">
-                                <p className="text-gray-500">No chats found. Create a new chat to get started.</p>
-                            </div>
-                        )
-                    }
+                    {chats.length === 0 && (
+                        <div className="flex items-center justify-center h-full">
+                            <p className="text-gray-500">
+                                No chats found. Create a new chat to get
+                                started.
+                            </p>
+                        </div>
+                    )}
                 </div>
             </div>
 
-            <div className="sticky bottom-0 z-10 p-4 border-t border-gray-200 bg-[#faf7f4]">
+            <div className="sticky bottom-0 z-10 p-4 border-t border-gray-200 bg-[#faf7f4] font-['JetBrains_Mono']">
                 <button
                     className="w-full bg-black text-white p-4 rounded-xl font-medium hover:bg-gray-900 transition-colors"
                     onClick={() => setShowCreateChatModal(true)}

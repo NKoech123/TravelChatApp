@@ -1,1 +1,1 @@
-export { ExpandableTextDisplay } from './ExpandableTextDisplay';
+export { ExpandableTextDisplay } from './ExpandableTextDisplay'

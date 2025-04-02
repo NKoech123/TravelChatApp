@@ -1,47 +1,47 @@
-import React, { useState, useEffect, useRef, FC, ReactNode } from 'react';
-import classNames from 'classnames';
+import React, { useState, useEffect, useRef, FC, ReactNode } from 'react'
+import classNames from 'classnames'
 
 interface ExpandableTextDisplayProps {
-    maxLines?: number;
-    children: ReactNode;
-    className?: string;
+    maxLines?: number
+    children: ReactNode
+    className?: string
 }
 
-const DEFAULT_LINE_LIMIT = 7;
+const DEFAULT_LINE_LIMIT = 7
 
 export const ExpandableTextDisplay: FC<ExpandableTextDisplayProps> = ({
     maxLines,
     children,
     className,
 }) => {
-    const contentRef = useRef<HTMLDivElement>(null);
+    const contentRef = useRef<HTMLDivElement>(null)
 
-    const [expanded, setExpanded] = useState(false);
-    const [showButton, setShowButton] = useState(false);
+    const [expanded, setExpanded] = useState(false)
+    const [showButton, setShowButton] = useState(false)
 
     useEffect(() => {
         const checkHeight = () => {
             if (contentRef.current) {
-                const fullHeight = contentRef.current.scrollHeight;
+                const fullHeight = contentRef.current.scrollHeight
                 const clampedHeight =
                     parseInt(
                         getComputedStyle(contentRef.current).lineHeight,
                         10
-                    ) * (maxLines || DEFAULT_LINE_LIMIT);
-                setShowButton(fullHeight > clampedHeight);
+                    ) * (maxLines || DEFAULT_LINE_LIMIT)
+                setShowButton(fullHeight > clampedHeight)
             }
-        };
+        }
 
-        checkHeight();
-        window.addEventListener('resize', checkHeight);
+        checkHeight()
+        window.addEventListener('resize', checkHeight)
 
         return () => {
-            window.removeEventListener('resize', checkHeight);
-        };
-    }, [children]);
+            window.removeEventListener('resize', checkHeight)
+        }
+    }, [children])
 
     return (
-        <div className={classNames('mt-5 mb-2', className)}>
+        <div className={classNames('my-2', className)}>
             <div
                 ref={contentRef}
                 style={{
@@ -58,15 +58,15 @@ export const ExpandableTextDisplay: FC<ExpandableTextDisplayProps> = ({
             </div>
             {showButton && (
                 <button
-                    onClick={(event) => {
-                        event.stopPropagation();
-                        setExpanded(!expanded);
+                    onClick={event => {
+                        event.stopPropagation()
+                        setExpanded(!expanded)
                     }}
-                    className="text-black font-bold"
+                    className="text-[#faf7f4] font-bold"
                 >
                     {expanded ? 'Show less' : 'Show more'}
                 </button>
             )}
         </div>
-    );
-};
+    )
+}

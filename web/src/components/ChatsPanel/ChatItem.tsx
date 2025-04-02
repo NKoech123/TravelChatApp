@@ -10,7 +10,12 @@ interface ChatItemProps {
     isMobileView: boolean
 }
 
-export function ChatItem({ chat, isActive, onClick, isMobileView }: ChatItemProps) {
+export function ChatItem({
+    chat,
+    isActive,
+    onClick,
+    isMobileView,
+}: ChatItemProps) {
     return (
         <div
             role="button"
@@ -18,15 +23,13 @@ export function ChatItem({ chat, isActive, onClick, isMobileView }: ChatItemProp
             className={classNames(
                 'p-4 bg-white rounded-lg border border-[#00000033] cursor-pointer transition-colors hover:bg-gray-50',
                 {
-                    'shadow-sm ring-1 ring-gray-200': isActive,
+                    'shadow-sm ring-1 ring-gray-700': isActive,
                 }
             )}
         >
             <div className="flex flex-row justify-between md:items-center gap-1 md:gap-2">
                 <div className="flex flex-col">
-                    <span className="font-medium">
-                        {chat.title}
-                    </span>
+                    <span className="font-medium">{chat.title}</span>
                     <span className="text-sm text-gray-400">
                         {formatDistance(
                             new Date(chat.timestamp as string),
@@ -36,10 +39,8 @@ export function ChatItem({ chat, isActive, onClick, isMobileView }: ChatItemProp
                             }
                         )}
                     </span>
-
                 </div>
                 <div className="flex items-center gap-2">
-
                     <svg
                         className="w-6 h-10 md:w-5 md:h-5 text-gray-400"
                         fill="none"
@@ -59,4 +60,4 @@ export function ChatItem({ chat, isActive, onClick, isMobileView }: ChatItemProp
     )
 }
 
-export default ChatItem 
+export default ChatItem
