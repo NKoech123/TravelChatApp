@@ -1,6 +1,6 @@
 # Welcome to Travel Chat App 👋
 
-## Tech UseD
+## Tech Used
 1. React (For Web)
 2. Expo React Native (For mobile)
 3. Redux (State Management)
