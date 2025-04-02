@@ -21,6 +21,10 @@
 
 [![Watch the video](https://cdn.loom.com/sessions/thumbnails/e736d2e43e7244d3afc575fbdd7af74f-with-play.gif)](https://www.loom.com/share/e736d2e43e7244d3afc575fbdd7af74f?sid=b99f6c65-c125-4f0a-b802-c7d81a2c1bda)
 
+<img width="214" alt="Screenshot 2025-04-02 at 10 39 39 AM" src="https://github.com/user-attachments/assets/9003c8ce-0cad-4761-871e-25b37115d86e" />
+<img width="218" alt="Screenshot 2025-04-02 at 10 39 18 AM" src="https://github.com/user-attachments/assets/e41648cc-16fa-421b-81a5-5e9d57e686e2" />
+<img width="218" alt="Screenshot 2025-04-02 at 10 38 38 AM" src="https://github.com/user-attachments/assets/b212238a-654e-4ac7-8e12-0c86dce76286" />
+
 
  
 ## Get started
@@ -43,7 +47,7 @@
     ```
 
 3. Run Client
-   For Web (easy for testing)  run:
+   For Web (easy for testing - I recommend this for testing)  run:
 
 ```bash
  npm run web: dev
