@@ -25,7 +25,7 @@ export const RightHandPanel: React.FC<RightHandPanelProps> = ({
     const messagesContainerRef = useRef<HTMLDivElement>(null)
 
     const chatId = location.pathname.split('/').pop()
-    console.log(chatId)
+
 
     const { messagesById } = useSelector(state => state.messages)
 
@@ -121,9 +121,10 @@ export const RightHandPanel: React.FC<RightHandPanelProps> = ({
                             <div className="sticky top-0 z-10 border-b border-gray-100 p-4 flex-shrink-0">
                                 <div className="flex items-center gap-3">
                                     <button
-                                        onClick={() =>
+                                        onClick={() => {
                                             actions.setActiveChatId('')
-                                        }
+                                            navigate('/chats')
+                                        }}
                                         className="md:hidden"
                                     >
                                         <svg
