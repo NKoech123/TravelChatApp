@@ -1,23 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react'
-
-interface Chat {
-    id: string
-    name: string
-    lastMessage: string
-    timestamp: string
-}
-
-interface MessageSchema {
-    id?: string
-    content?: string
-    isAI?: boolean
-}
+import { MessageSchema, ChatSchema } from '@nicholas/types'
 
 interface RightHandPanelProps {
     activeChat: string | null
     isMobileView: boolean
     onBackClick: () => void
-    chats: Chat[]
+    chats: ChatSchema[]
 }
 
 export function RightHandPanel({
@@ -85,7 +73,7 @@ export function RightHandPanel({
                             <h1 className="text-2xl font-semibold">
                                 {
                                     chats.find(chat => chat.id === activeChat)
-                                        ?.name
+                                        ?.title
                                 }
                             </h1>
                         </div>

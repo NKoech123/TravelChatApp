@@ -1,14 +1,10 @@
 import React from 'react'
+import { ChatSchema } from '@nicholas/types'
 
-interface Chat {
-    id: string
-    name: string
-    lastMessage: string
-    timestamp: string
-}
+
 
 interface ChatsPanelProps {
-    chats: Chat[]
+    chats: ChatSchema[]
     activeChat: string | null
     isMobileView: boolean
     onChatSelect: (chatId: string) => void
