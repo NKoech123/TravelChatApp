@@ -28,19 +28,24 @@
 
  
 ## Get started
+0. Ensure docker is installed in your machine. Also have these in your `.env`
+  ```bash
+    DATABASE_URL="postgresql://postgresUser:postgresPW@localhost:5455/postgres?schema=public"
+    OPENAI_API_KEY="xxxxx-your-key-xxxxxxxx"
+    ```
 
-1. Install dependencies
+2. Install dependencies
 
     ```bash
     npm install
     ```
 
-2. Run Fastify API
+3. Run Fastify API
 
     ```bash
      npm run api
     ```
-3. Seed some data (a user for server context)
+4. Seed some data (a user for server context)
 
     ```bash
      npm run data-model-postgres
