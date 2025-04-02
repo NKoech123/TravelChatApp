@@ -45,7 +45,7 @@
     ```bash
      npm run api
     ```
-4. Seed some data (a user for server context)
+4.  Seed some data initial chats and most important a default user to use for server request contexts
 
     ```bash
      npm run data-model-postgres
