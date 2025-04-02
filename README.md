@@ -9,6 +9,11 @@
 
 ![image](https://github.com/user-attachments/assets/5d027dce-fc72-4a39-a9f7-cf4f74d8cd2e)
 
+## Web View
+[**Travel Chat App – 2 April 2025 – Watch Video**](https://www.loom.com/share/983f93e322994f019342f574c0668a40)
+
+[![Watch the video](https://cdn.loom.com/sessions/thumbnails/983f93e322994f019342f574c0668a40-e71ecc4a04814c70-full-play.gif)](https://www.loom.com/share/983f93e322994f019342f574c0668a40)
+
 
 ## Get started
 
