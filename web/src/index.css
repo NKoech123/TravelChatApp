@@ -1,0 +1,25 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    html {
+        font-family: 'Work Sans', sans-serif;
+    }
+}
+
+@layer components {
+    .font-mono {
+        font-family: 'JetBrains Mono', monospace;
+    }
+}
+
+html,
+body,
+#root {
+    height: 100%;
+    margin: 0;
+}
