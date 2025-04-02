@@ -1,21 +1,33 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { ChatSchema } from '@nicholas/types'
+import { useSelector, useActions } from '../../state/hooks'
+import { formatDistance } from 'date-fns'
 
 
 
 interface ChatsPanelProps {
-    chats: ChatSchema[]
-    activeChat: string | null
     isMobileView: boolean
-    onChatSelect: (chatId: string) => void
+
 }
 
 export function ChatsPanel({
-    chats,
-    activeChat,
+
     isMobileView,
-    onChatSelect,
+
 }: ChatsPanelProps) {
+    const actions = useActions()
+    const { chatsById, activeChatId } = useSelector(
+        state => state.chats
+    )
+
+    const chats = useMemo(() => {
+        return Object.values(chatsById).sort(
+            (a, b) =>
+                new Date(b.timestamp as string).getTime() -
+                new Date(a.timestamp as string).getTime()
+        )
+    }, [chatsById])
+
     return (
         <section
             className={`bg-[#faf7f4] flex flex-col h-screen transition-all duration-300 ${isMobileView && activeChat ? 'hidden' : 'w-full'}`}
@@ -28,15 +40,18 @@ export function ChatsPanel({
                 <div className="space-y-2 p-4 pb-10">
                     {chats.map(chat => (
                         <div
+                            role="button"
                             key={chat.id}
-                            onClick={() => onChatSelect(chat.id)}
-                            className={`p-4 bg-white rounded-2xl cursor-pointer transition-colors hover:bg-gray-50 ${activeChat === chat.id ? 'shadow-sm ring-1 ring-gray-200' : ''}`}
+                            onClick={() => actions.setActiveChatId(chat.id as string)}
+                            className={`p-4 bg-white rounded-2xl cursor-pointer transition-colors hover:bg-gray-50 ${activeChatId === chat.id ? 'shadow-sm ring-1 ring-gray-200' : ''}`}
                         >
                             <div className="flex justify-between items-center">
-                                <span className="font-medium">{chat.name}</span>
+                                <span className="font-medium">{chat.title}</span>
                                 <div className="flex items-center gap-2">
                                     <span className="text-sm text-gray-400">
-                                        {chat.timestamp}
+                                        {formatDistance(new Date(chat.timestamp as string), new Date(), {
+                                            addSuffix: true,
+                                        })}
                                     </span>
                                     <svg
                                         className="w-5 h-5 text-gray-400"

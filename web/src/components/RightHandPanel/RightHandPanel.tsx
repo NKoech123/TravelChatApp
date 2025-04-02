@@ -1,19 +1,26 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useMemo } from 'react'
 import { MessageSchema, ChatSchema } from '@nicholas/types'
-
+import { useSelector, useActions } from '../../state/hooks'
 interface RightHandPanelProps {
-    activeChat: string | null
+
     isMobileView: boolean
-    onBackClick: () => void
-    chats: ChatSchema[]
+
 }
 
 export function RightHandPanel({
-    activeChat,
+
     isMobileView,
-    onBackClick,
-    chats,
+
+
 }: RightHandPanelProps) {
+    const actions = useActions()
+    const { activeChatId, chatsById } = useSelector(state => state.chats)
+    const { messagesById } = useSelector(state => state.messages)
+
+    const messages = useMemo(() => {
+        return Object.values(messagesById).filter(message => message.chatId === activeChatId)
+    }, [messagesById, activeChatId])
+
     const [message, setMessage] = useState('')
     const textareaRef = useRef<HTMLTextAreaElement>(null)
 
@@ -41,21 +48,21 @@ export function RightHandPanel({
         }
     }
 
-    const messages: MessageSchema[] = Array.from({ length: 20 }, (_, i) => ({
-        id: `${i + 1}`,
-        content: i % 2 === 0 ? 'This is user message' : 'This is AI message',
-        isAI: i % 2 !== 0,
-    }))
+    // const messages: MessageSchema[] = Array.from({ length: 20 }, (_, i) => ({
+    //     id: `${i + 1}`,
+    //     content: i % 2 === 0 ? 'This is user message' : 'This is AI message',
+    //     isAI: i % 2 !== 0,
+    // }))
 
     return (
         <section
             className={`flex flex-col h-screen bg-white transition-all duration-300 ${isMobileView && !activeChat ? 'hidden' : 'w-full'}`}
         >
-            {activeChat ? (
+            {activeChatId ? (
                 <>
                     <div className="sticky top-0 z-10 border-b border-gray-100 p-4 flex-shrink-0 bg-white">
                         <div className="flex items-center gap-3">
-                            <button onClick={onBackClick} className="md:hidden">
+                            <button onClick={() => actions.setActiveChatId(null)} className="md:hidden">
                                 <svg
                                     className="w-6 h-6 text-gray-400"
                                     fill="none"
@@ -72,8 +79,7 @@ export function RightHandPanel({
                             </button>
                             <h1 className="text-2xl font-semibold">
                                 {
-                                    chats.find(chat => chat.id === activeChat)
-                                        ?.title
+                                    chatsById[activeChatId as string]?.title
                                 }
                             </h1>
                         </div>

@@ -7,12 +7,14 @@ interface ChatsState {
     chatsLoading: boolean
     chatsError: string
     chatsById: { [key: string]: ChatSchema }
+    activeChatId: string | null
 }
 
 const initialChatsState: ChatsState = {
     chatsLoading: false,
     chatsError: '',
     chatsById: {},
+    activeChatId: null,
 }
 
 export const getChats = createAsyncThunk('chats/getChats', async () => {
@@ -66,7 +68,11 @@ export const upsertChat = createAsyncThunk(
 export const chatsSlice = createSlice({
     name: 'chats',
     initialState: initialChatsState,
-    reducers: {},
+    reducers: {
+        setActiveChatId: (state: ChatsState, action: PayloadAction<string>) => {
+            state.activeChatId = action.payload
+        },
+    },
     extraReducers: builder => {
         builder.addCase(getChats.pending, (state: ChatsState) => {
             state.chatsLoading = true
@@ -119,3 +125,4 @@ export const chatsSlice = createSlice({
 })
 
 export const chatsReducer = chatsSlice.reducer
+export const { setActiveChatId } = chatsSlice.actions
