@@ -14,7 +14,10 @@ const DEFAULT_USER_EMAIL = 'nicholask320@gmail.com'
 const app = fastify({ trustProxy: true, logger: true, bodyLimit: 50000000 })
 
 app.register(cors, {
-    allowedHeaders: ['Authorization', 'Content-Type'],
+    origin: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Authorization', 'Content-Type', 'apiContext'],
+    credentials: true
 })
 
 app.register(requestContext, {
