@@ -8,14 +8,9 @@ interface Chat {
 }
 
 interface MessageSchema {
-    object?: string
-    error?: string
     id?: string
     content?: string
     isAI?: boolean
-    chatId?: string
-    userId?: string
-    timestamp?: string
 }
 
 interface RightHandPanelProps {
@@ -34,7 +29,6 @@ export function RightHandPanel({
     const [message, setMessage] = useState('')
     const textareaRef = useRef<HTMLTextAreaElement>(null)
 
-    // Auto-resize textarea
     useEffect(() => {
         if (textareaRef.current) {
             textareaRef.current.style.height = 'auto'
@@ -45,7 +39,6 @@ export function RightHandPanel({
     const handleSendMessage = (e: React.FormEvent) => {
         e.preventDefault()
         if (message.trim()) {
-            // Handle sending message here
             setMessage('')
             if (textareaRef.current) {
                 textareaRef.current.style.height = 'auto'
@@ -60,56 +53,18 @@ export function RightHandPanel({
         }
     }
 
-
-    const messages: MessageSchema[] = [
-        {
-            id: '1',
-            content: 'Hello, how are you?',
-            isAI: false,
-        },
-        {
-            id: '2',
-            content: 'I am fine, thank you!',
-            isAI: true,
-        },
-        {
-            id: '3',
-            content: 'What is your name?',
-            isAI: false,
-        },
-        {
-            id: '4',
-            content: 'I am a chatbot.',
-            isAI: true,
-        },
-        {
-            id: '5',
-            content: 'What is your name?',
-            isAI: false,
-        },
-        {
-            id: '6',
-            content: 'I am a chatbot.',
-            isAI: true,
-        },
-        {
-            id: '7',
-            content: 'What is your name?',
-            isAI: false,
-        },
-
-    ]
-
-
+    const messages: MessageSchema[] = Array.from({ length: 20 }, (_, i) => ({
+        id: `${i + 1}`,
+        content: i % 2 === 0 ? 'This is user message' : 'This is AI message',
+        isAI: i % 2 !== 0,
+    }))
 
     return (
-        <div
-            className={`flex flex-col h-screen bg-white transition-all duration-300 ${isMobileView && !activeChat ? 'hidden' : 'w-full'
-                } md:block relative`}
+        <section
+            className={`flex flex-col h-screen bg-white transition-all duration-300 ${isMobileView && !activeChat ? 'hidden' : 'w-full'}`}
         >
             {activeChat ? (
                 <>
-                    {/* Chat Header */}
                     <div className="sticky top-0 z-10 border-b border-gray-100 p-4 flex-shrink-0 bg-white">
                         <div className="flex items-center gap-3">
                             <button onClick={onBackClick} className="md:hidden">
@@ -127,26 +82,30 @@ export function RightHandPanel({
                                     />
                                 </svg>
                             </button>
-                            <h2 className="text-xl font-semibold">
-                                {chats.find(chat => chat.id === activeChat)?.name}
-                            </h2>
+                            <h1 className="text-2xl font-semibold">
+                                {
+                                    chats.find(chat => chat.id === activeChat)
+                                        ?.name
+                                }
+                            </h1>
                         </div>
                     </div>
 
-                    {/* Chat Messages Container */}
-                    <div className="flex-1 pb-[88px]">
-                        <div className="space-y-4 p-4">
-                            {messages.map(message => (
-                                <div key={message.id} className={`flex ${message.isAI ? 'justify-start' : 'justify-end'} mb-4`}>
-                                    <div className={`max-w-[80%] mb-2 ${message.isAI ? 'bg-[#f8f4ee]' : 'bg-black text-white'} rounded-lg p-3 shadow-sm`}>
-                                        {message.content}
-                                    </div>
+                    <div className="flex-1 min-h-0 overflow-y-auto px-4 space-y-4 py-4">
+                        {messages.map(message => (
+                            <div
+                                key={message.id}
+                                className={`flex ${message.isAI ? 'justify-start' : 'justify-end'} mb-4`}
+                            >
+                                <div
+                                    className={`max-w-[80%] mb-2 ${message.isAI ? 'bg-[#f8f4ee]' : 'bg-black text-white'} rounded-lg p-3 shadow-sm`}
+                                >
+                                    {message.content}
                                 </div>
-                            ))}
-                        </div>
+                            </div>
+                        ))}
                     </div>
 
-                    {/* Fixed Message Input */}
                     <div className="sticky bottom-0 left-0 right-0 border-t border-gray-100 p-4 bg-white">
                         <form
                             onSubmit={handleSendMessage}
@@ -165,7 +124,7 @@ export function RightHandPanel({
                                 />
                                 <button
                                     type="submit"
-                                    className="absolute right-2 top-2 p-2 bg-black rounded-full hover:bg-gray-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="absolute right-2 top-2 p-2 bg-black rounded-full hover:bg-gray-900 transition-colors disabled:opacity-50"
                                     disabled={!message.trim()}
                                 >
                                     <svg
@@ -191,7 +150,7 @@ export function RightHandPanel({
                     Select a chat to start messaging
                 </div>
             )}
-        </div>
+        </section>
     )
 }
 
