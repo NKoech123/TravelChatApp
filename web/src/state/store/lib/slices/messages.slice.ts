@@ -23,7 +23,7 @@ export const getMessages = createAsyncThunk(
             url: `${apiDomain}/api/chats/${chatId}/messages`,
             requiresAccessToken: true,
         })
-
+        console.log(respJson, 'check')
         for (const message of respJson.messages) {
             if (message.error) {
                 throw new Error(message.error)
@@ -44,7 +44,7 @@ export const upsertMessage = createAsyncThunk(
         { rejectWithValue }
     ) => {
         const { message, chatId, handleSuccess } = data
-        console.log('message', message)
+
         try {
             const respJson = (await fetchWrapper({
                 method: 'POST',

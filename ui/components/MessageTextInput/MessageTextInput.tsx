@@ -12,7 +12,7 @@ import {
 } from 'react-native'
 import { ArrowUpIcon } from 'react-native-heroicons/mini'
 import { MessageSchema } from '@nicholas/types'
-import { useSelector, useActions } from '@/ui/state/hooks'
+import { useActions } from '@/ui/state/hooks'
 import { Spinner } from '@/ui/components/Spinner/Spinner'
 
 interface MessageTextInputProps {

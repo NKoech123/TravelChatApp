@@ -71,8 +71,8 @@ export const NewChatForm: FC<NewChatFormProps> = ({ closeModal }) => {
                         style={[
                             styles.inputField,
                             !isFormValid &&
-                                formData.title.length > 0 &&
-                                styles.inputError,
+                            formData.title.length > 0 &&
+                            styles.inputError,
                         ]}
                         placeholderTextColor="#666"
                         value={formData.title}

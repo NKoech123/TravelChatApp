@@ -35,7 +35,7 @@ export const getChats = createAsyncThunk('chats/getChats', async () => {
 export const upsertChat = createAsyncThunk(
     'chats/upsertChat',
     async (
-        data: { chats: ChatsSchema; handleSuccess: () => void },
+        data: { chats: ChatsSchema; handleSuccess: (id: string) => void },
         { rejectWithValue }
     ) => {
         const { chats, handleSuccess } = data
@@ -55,7 +55,7 @@ export const upsertChat = createAsyncThunk(
             }
             console.log('respJson chats', respJson.chats)
 
-            handleSuccess()
+            handleSuccess(respJson.chats?.[0]?.id as string)
             return respJson.chats as ChatSchema[]
         } catch (error) {
             return rejectWithValue({

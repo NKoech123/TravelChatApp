@@ -34,7 +34,7 @@ const ThinkingIndicator = () => {
 export const ChatScreen = ({ id }: ChatScreenProps) => {
     const scrollViewRef = useRef<ScrollView>(null)
     const actions = useActions()
-    console.log('chat room id', id)
+
     const { messagesById, messagesLoading, messagesError } = useSelector(
         state => state.messages
     )
