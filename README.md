@@ -14,7 +14,17 @@
 
 [![Watch the video](https://cdn.loom.com/sessions/thumbnails/983f93e322994f019342f574c0668a40-e71ecc4a04814c70-full-play.gif)](https://www.loom.com/share/983f93e322994f019342f574c0668a40)
 
+## Mobile (React native) View:
+## 📱 Mobile Demo – Travel Chat App
 
+## 📱 Mobile Demo – Travel Chat App
+
+[**Watch on Loom**](https://www.loom.com/share/e736d2e43e7244d3afc575fbdd7af74f?sid=b99f6c65-c125-4f0a-b802-c7d81a2c1bda)
+
+[![Watch the video](https://cdn.loom.com/sessions/thumbnails/e736d2e43e7244d3afc575fbdd7af74f-with-play.gif)](https://www.loom.com/share/e736d2e43e7244d3afc575fbdd7af74f?sid=b99f6c65-c125-4f0a-b802-c7d81a2c1bda)
+
+
+ 
 ## Get started
 
 1. Install dependencies
