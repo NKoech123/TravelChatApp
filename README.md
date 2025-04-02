@@ -32,7 +32,7 @@
   ```bash
     DATABASE_URL="postgresql://postgresUser:postgresPW@localhost:5455/postgres?schema=public"
     OPENAI_API_KEY="xxxxx-your-key-xxxxxxxx"
-    ```
+  ```
 
 2. Install dependencies
 
