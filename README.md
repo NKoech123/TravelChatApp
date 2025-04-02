@@ -37,7 +37,7 @@
 
  
 ## Get started
-0. Ensure docker is installed in your machine. Also have these in your `.env`
+1. Ensure docker is installed in your machine. Also have these in your `.env`
   ```bash
     DATABASE_URL="postgresql://postgresUser:postgresPW@localhost:5455/postgres?schema=public"
     OPENAI_API_KEY="xxxxx-your-key-xxxxxxxx"
