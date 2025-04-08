@@ -3,6 +3,8 @@ import { isWithinTokenLimit } from 'gpt-tokenizer'
 import { logger } from '@nicholas/log-utils'
 import { chatService } from './chat-service'
 import prisma from './clients/prisma-client'
+import { MessagesSchema } from '@/server/data-model/types/src/generated/generated'
+import { OutputChipsSchema } from '@nicholas/types'
 
 const SYSTEM_MESSAGES = [
     'You are a knowledgeable and friendly travel assistant.',
@@ -68,6 +70,8 @@ export class LLMService {
         })
     }
 
+
+
     private async addUserChatContextMessages(
         aiRequestMessages: OpenAI.Chat.ChatCompletionMessageParam[],
         chatId: string
@@ -97,6 +101,60 @@ export class LLMService {
             content: travelAssistantRole,
         })
     }
+
+    async generateChipsFromMessages(chatId: string, existingChips?: string[]): Promise<OutputChipsSchema> {
+        const messages = await chatService.getChatMessages(chatId) as MessagesSchema
+        const messageContent = messages.messages.map((m) => m.content).join('\n')
+
+        const chat = await chatService.getChat(chatId)
+
+        const aiRequestMessages: OpenAI.Chat.ChatCompletionMessageParam[] = []
+
+        const instructions = `
+You are to extract exactly 10 short, unique, descriptive phrases from the following chat messages.
+Return them inside a valid JSON object in the following format:
+{ "chips": ["phrase 1", "phrase 2", ..., "phrase 10"] }
+
+If there are no messages, make up phrases about what the user might want to explore in a new place
+${chat?.title || 'Travel Planning'} with the following description:
+${chat?.description || 'General travel assistance'}
+
+If there are existing chips, make sure to exclude them from the output. Find new phrases that are not in the existing chips.
+
+Only output the raw JSON — do NOT include code blocks (like triple backticks), explanations, or any formatting.
+    `
+
+        this.addDefaultSystemMessages(aiRequestMessages)
+
+        aiRequestMessages.push({ role: 'user', content: instructions })
+        aiRequestMessages.push({ role: 'user', content: `Chat messages:\n${messageContent}` })
+
+        const response = await this.callOpenAI(aiRequestMessages)
+
+        let raw = response.trim()
+
+        // Strip Markdown code block formatting if present
+        if (raw.startsWith('```')) {
+            raw = raw.replace(/^```(?:json)?\n/, '').replace(/\n```$/, '').trim()
+        }
+
+        logger.log('raw chips', raw)
+
+        try {
+            const parsed = JSON.parse(raw)
+            if (!parsed?.chips || !Array.isArray(parsed.chips)) {
+                throw new Error('Parsed JSON does not contain a "chips" array')
+            }
+
+            logger.log('parsed chips', parsed.chips)
+
+            return { chatId, chips: parsed.chips }
+        } catch (err) {
+            logger.error('Failed to parse AI response:', raw)
+            throw new Error('Invalid JSON response from AI')
+        }
+    }
+
 
     async generateLLMResponse(
         message: string,

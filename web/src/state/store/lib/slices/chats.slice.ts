@@ -1,13 +1,17 @@
-import { ChatSchema, ChatsSchema } from '@nicholas/types'
+import { ChatSchema, ChatsSchema, OutputChipsSchema } from '@nicholas/types'
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit'
 
 import { fetchWrapper, apiDomain } from '../../../../client-utils'
+import { ActionSheetIOS } from 'react-native'
 
 interface ChatsState {
     chatsLoading: boolean
     chatsError: string
     chatsById: { [key: string]: ChatSchema }
     activeChatId: string | null
+    chipsByChatId: { [key: string]: string[] }
+    chipsLoading: boolean
+    chipsError: string
 }
 
 const initialChatsState: ChatsState = {
@@ -15,6 +19,9 @@ const initialChatsState: ChatsState = {
     chatsError: '',
     chatsById: {},
     activeChatId: null,
+    chipsByChatId: {},
+    chipsLoading: false,
+    chipsError: '',
 }
 
 export const getChats = createAsyncThunk('chats/getChats', async () => {
@@ -32,6 +39,21 @@ export const getChats = createAsyncThunk('chats/getChats', async () => {
     return respJson.chats as ChatSchema[]
 })
 
+export const getChips = createAsyncThunk(
+    'chats/getChips',
+    async (data: { chatId: string, existingChips?: string[] }, { rejectWithValue }) => {
+        const { chatId, existingChips } = data
+        const respJson = (await fetchWrapper({
+            method: 'POST',
+            url: `${apiDomain}/api/llm-encrich-chips`,
+            requiresAccessToken: false,
+            body: { chatId, existingChips },
+        })) as OutputChipsSchema
+
+        return { chatId, chips: respJson.chips as string[] }
+    }
+)
+
 export const upsertChat = createAsyncThunk(
     'chats/upsertChat',
     async (
@@ -39,7 +61,7 @@ export const upsertChat = createAsyncThunk(
         { rejectWithValue }
     ) => {
         const { chats, handleSuccess } = data
-        console.log('chats', chats)
+
         try {
             const respJson = (await fetchWrapper({
                 method: 'POST',
@@ -53,7 +75,7 @@ export const upsertChat = createAsyncThunk(
                     throw new Error(chat.error)
                 }
             }
-            console.log('respJson chats', respJson.chats)
+
 
             handleSuccess(respJson.chats?.[0]?.id as string)
             return respJson.chats as ChatSchema[]
@@ -74,6 +96,23 @@ export const chatsSlice = createSlice({
         },
     },
     extraReducers: builder => {
+        builder.addCase(getChips.pending, (state: ChatsState, action) => {
+            state.chipsLoading = true
+            state.chipsError = ''
+        })
+
+        builder.addCase(getChips.fulfilled, (state: ChatsState, action: PayloadAction<{ chatId: string; chips: string[] }>) => {
+            state.chipsLoading = false
+            state.chipsError = ''
+
+            state.chipsByChatId[action.payload.chatId] = action.payload.chips
+        })
+
+        builder.addCase(getChips.rejected, (state: ChatsState, action) => {
+            state.chipsLoading = false
+            state.chipsError = action.error.message as string
+        })
+
         builder.addCase(getChats.pending, (state: ChatsState) => {
             state.chatsLoading = true
             state.chatsError = initialChatsState.chatsError
