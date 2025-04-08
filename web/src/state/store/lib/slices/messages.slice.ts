@@ -23,7 +23,7 @@ export const getMessages = createAsyncThunk(
             url: `${apiDomain}/api/chats/${chatId}/messages`,
             requiresAccessToken: true,
         })
-        console.log(respJson, 'check')
+
         for (const message of respJson.messages) {
             if (message.error) {
                 throw new Error(message.error)

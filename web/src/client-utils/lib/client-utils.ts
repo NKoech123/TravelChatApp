@@ -54,11 +54,7 @@ export const fetchWrapper = async (
         const resp = await fetch(options.url, requestOptions)
 
         const respJson = await resp.json()
-        console.log('Response:', {
-            status: resp.status,
-            url: options.url,
-            json: respJson,
-        })
+
 
         // Handle other errors
         if (resp.status >= 400) {

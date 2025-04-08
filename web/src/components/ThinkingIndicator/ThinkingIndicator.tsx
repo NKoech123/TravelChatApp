@@ -12,10 +12,10 @@ export const ThinkingIndicator: React.FC = () => {
     }, [])
 
     return (
-        <div className="mb-4 max-w-[50%] self-start relative">
-            <div className="bg-black bg-opacity-70 py-3 px-4 rounded-3xl rounded-bl-none ml-1 relative">
-                <p className="text-white text-base font-mono leading-6">
-                    AI is thinking{dots}
+        <div className="mb-4 bg-black py-3 px-4 rounded-3xl rounded-bl-none max-w-[50%] self-start relative">
+            <div className="ml-1 relative">
+                <p className="text-white text-base font-mono leading-6 text-large">
+                    AI is thinking {dots}
                 </p>
             </div>
         </div>

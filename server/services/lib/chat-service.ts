@@ -112,7 +112,7 @@ class ChatService {
         return results
     }
 
-    async getChatMessages(chatId: string) {
+    async getChatMessages(chatId: string): Promise<MessagesSchema> {
         const userContext = getRequestContext()
 
         try {
@@ -138,7 +138,7 @@ class ChatService {
                 error?.message || error
             )
             if (error instanceof Prisma.PrismaClientKnownRequestError) {
-                return prismaErrorHandler(error)
+                prismaErrorHandler(error)
             }
             throw error
         }
